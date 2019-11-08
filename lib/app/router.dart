@@ -27,7 +27,7 @@ final List<AjanuwRoute> routes = [
       SearchType type = param['searchType'];
       String tag = param['tag'];
       assert((() {
-        if (type == SearchType.tag) {
+        if (type == SearchType.tag || type == SearchType.search) {
           return tag != null;
         }
         return true;

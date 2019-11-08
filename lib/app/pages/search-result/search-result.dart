@@ -40,15 +40,21 @@ class _SearchResultState extends State<SearchResult> {
     SearchResponse r;
     if (widget.searchType == SearchType.tag) {
       r = await theHentaiWorldService.searchTag(tag: widget.tag, page: _page);
+    } else if (widget.searchType == SearchType.search) {
+      r = await theHentaiWorldService.searchTag(
+          tag: widget.tag, page: _page);
     } else if (widget.searchType == SearchType.neww) {
       r = await theHentaiWorldService.searchNew(page: _page);
     } else if (widget.searchType == SearchType.updated) {
       r = await theHentaiWorldService.searchUpdated(page: _page);
     }
-    setState(() {
-      searchResponse = r;
-      loading = false;
-    });
+
+    if (mounted) {
+      setState(() {
+        searchResponse = r;
+        loading = false;
+      });
+    }
   }
 
   _setPage(int newPage) {

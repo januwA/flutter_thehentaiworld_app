@@ -7,7 +7,7 @@ enum ThumbType {
   video,
 }
 
-enum SearchType { neww, tag, updated }
+enum SearchType { neww, tag, updated, search }
 
 class ThumbData {
   final ThumbType type;
@@ -89,7 +89,14 @@ Future<dom.Document> $document(String url) async {
 }
 
 class TheHentaiWorldService {
-  /// 搜索tag
+  /// 点击搜索按钮
+  Future<SearchResponse> searchString({String str, int page = 1}) async {
+    dom.Document document =
+        await $document('https://thehentaiworld.com/page/$page/?s=$str');
+    return _getResponse(document);
+  }
+
+  /// 搜索tag, 按下回车键
   Future<SearchResponse> searchTag({String tag, int page = 1}) async {
     dom.Document document =
         await $document('https://thehentaiworld.com/tag/$tag/page/$page/');

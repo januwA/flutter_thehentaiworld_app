@@ -8,6 +8,7 @@ import 'package:video_player/video_player.dart';
 import '../../../main.dart';
 import 'widgets/thumb_image_pages.dart';
 
+// https://thehentaiworld.com/?s=loli
 class HentaiImages extends StatefulWidget {
   final ThumbData thumb;
 
@@ -39,6 +40,7 @@ class HhentaiImagesState extends State<HentaiImages> {
         volume: 0.0,
       );
       vc.showVideoCtrl(false);
+      vc.initialize();
     }
     _init();
   }
@@ -99,6 +101,10 @@ class HhentaiImagesState extends State<HentaiImages> {
                   child: ThumbImagePages(
                     thumbs: relatedThumbs,
                     onTap: (index) {
+                      // 跳转其他页面时，暂停视频的播放
+                      if (vc?.videoCtrl?.value?.isPlaying ?? false) {
+                        vc.togglePlay();
+                      }
                       Navigator.of(context).pushNamed(
                         '/hentai-images',
                         arguments: relatedThumbs[index],

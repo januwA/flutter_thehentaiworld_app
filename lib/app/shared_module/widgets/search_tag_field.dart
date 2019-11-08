@@ -13,7 +13,7 @@ class _SearchTagFieldState extends State<SearchTagField> {
     Navigator.of(context).pushNamed(
       '/search-result',
       arguments: {
-        'searchType': SearchType.tag,
+        'searchType': SearchType.search,
         'tag': controller.text,
       },
     );
