@@ -90,6 +90,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.2"
+  flutter_mobx:
+    dependency: transitive
+    description:
+      name: flutter_mobx
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.3+1"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -144,6 +151,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.12.5"
+  matrix_gesture_detector:
+    dependency: "direct main"
+    description:
+      name: matrix_gesture_detector
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.0"
   meta:
     dependency: transitive
     description:
@@ -151,6 +165,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.7"
+  mobx:
+    dependency: transitive
+    description:
+      name: mobx
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.9+1"
   path:
     dependency: transitive
     description:
@@ -172,6 +193,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.0"
+  provider:
+    dependency: transitive
+    description:
+      name: provider
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.0+1"
   quiver:
     dependency: transitive
     description:
@@ -179,6 +207,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.5"
+  random_color:
+    dependency: "direct main"
+    description:
+      name: random_color
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.3"
+  screen:
+    dependency: transitive
+    description:
+      name: screen
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.5"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -212,6 +254,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.5"
+  system_shortcuts:
+    dependency: transitive
+    description:
+      name: system_shortcuts
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.7"
   term_glyph:
     dependency: transitive
     description:
@@ -240,6 +289,27 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.8"
+  video_box:
+    dependency: "direct main"
+    description:
+      name: video_box
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.6.0"
+  video_player:
+    dependency: transitive
+    description:
+      name: video_player
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.10.2+5"
+  volume:
+    dependency: transitive
+    description:
+      name: volume
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.0"
   xml:
     dependency: transitive
     description:
@@ -249,3 +319,4 @@ packages:
     version: "3.5.0"
 sdks:
   dart: ">=2.4.0 <3.0.0"
+  flutter: ">=1.5.0 <2.0.0"

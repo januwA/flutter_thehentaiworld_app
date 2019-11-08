@@ -7,6 +7,8 @@ enum ThumbType {
   video,
 }
 
+enum SearchType { neww, tag, updated }
+
 class ThumbData {
   final ThumbType type;
 
@@ -42,6 +44,28 @@ class ThumbData {
   }
 }
 
+class TagData {
+  final String tag;
+  final String label;
+
+  TagData({this.tag, this.label});
+
+  @override
+  String toString() {
+    return """{
+      tag: $tag,
+      label: $label
+      }""";
+  }
+}
+
+class HentaiImagesData {
+  final List<ThumbData> miniThumbs;
+  final List<ThumbData> relatedThumbs;
+
+  HentaiImagesData({this.miniThumbs, this.relatedThumbs});
+}
+
 class SearchResponse {
   final int startPage;
   final int endPage;
@@ -65,36 +89,102 @@ Future<dom.Document> $document(String url) async {
 }
 
 class TheHentaiWorldService {
-  Future<SearchResponse> search({String s, int page = 1}) async {
+  /// 搜索tag
+  Future<SearchResponse> searchTag({String tag, int page = 1}) async {
     dom.Document document =
-        await $document('https://thehentaiworld.com/tag/$s/page/$page/');
+        await $document('https://thehentaiworld.com/tag/$tag/page/$page/');
+    return _getResponse(document);
+  }
 
-    var thumbs = queryThumbs(document, '#thumbContainer');
+  /// 搜索new
+  Future<SearchResponse> searchNew({int page = 1}) async {
+    dom.Document document =
+        await $document('https://thehentaiworld.com/page/$page/?new');
+    return _getResponse(document);
+  }
+
+  /// 搜索updated
+  Future<SearchResponse> searchUpdated({int page = 1}) async {
+    dom.Document document =
+        await $document('https://thehentaiworld.com/page/$page/?updated');
+    return _getResponse(document);
+  }
+
+  /// 缓存tags
+  /// 因为tags的变化不是很频繁
+  List<TagData> _tags;
+
+  /// 返回所有的tags
+  Stream<List<TagData>> getTags() async* {
+    if (_tags != null) {
+      yield _tags;
+    }
+    dom.Document document = await $document('https://thehentaiworld.com/tags/');
+    dom.Element tagListContainer = document.querySelector('#tag-list');
+    List<dom.Element> tagsList = tagListContainer.querySelectorAll('.artist');
+    List<TagData> tags = List<TagData>();
+
+    for (var i = 0; i < tagsList.length; i++) {
+      var tag = tagsList[i];
+      tags.add(TagData(
+        label: tag.text.trim(),
+        tag: tag.attributes['href'].split('/').last,
+      ));
+      yield tags;
+    }
+    _tags = tags;
+    return;
+  }
+
+  SearchResponse _getResponse(dom.Document document) {
+    var thumbs = _queryThumbs(document, '#thumbContainer');
 
     dom.Element ol = document.querySelector('#more-hentai ol');
-    var pages = ol.querySelectorAll('.page');
+    int startPage = 0;
+    int endPage = 0;
+    if (ol != null) {
+      var pages = ol.querySelectorAll('.page');
+      startPage = int.parse(pages.first.text);
+      endPage = int.parse(pages.last.text);
+    }
     return SearchResponse(
-      startPage: int.parse(pages.first.text),
-      endPage: int.parse(pages.last.text),
+      startPage: startPage,
+      endPage: endPage,
       thumbs: thumbs,
     );
   }
 
-  getThumbDetail(ThumbData thumb) {}
+  /// 路由为[/hentai-images], 其实有点像detail页面
+  Future<HentaiImagesData> getHentaiImages(ThumbData thumb) async {
+    var document = await $document(thumb.href);
+    List<ThumbData> _miniThumbs = List<ThumbData>();
+    if (thumb.type == ThumbType.image) {
+      _miniThumbs = await _queryMiniThumbs(document);
+      if (_miniThumbs.isEmpty) {
+        // 有可能不存在多个视图返回的空列表，所以显示自己
+        _miniThumbs.add(thumb);
+      }
+    }
+    List<ThumbData> relatedThumbs = await _queryRelatedList(document);
+    return HentaiImagesData(
+      miniThumbs: _miniThumbs,
+      relatedThumbs: relatedThumbs,
+    );
+  }
 
   /// 获取[#miniThumbContainer]下的thumbs
-  Future<List<ThumbData>> queryMiniThumbs(dom.Document document) async {
-    return queryThumbs(document, '#miniThumbContainer');
+  Future<List<ThumbData>> _queryMiniThumbs(dom.Document document) async {
+    return _queryThumbs(document, '#miniThumbContainer');
   }
 
   /// 获取[thumb]有关类容
   /// 并不是每次都一样，而是动态的
-  Future<List<ThumbData>> queryRelatedList(dom.Document document) async {
-    return queryThumbs(document, '#related');
+  Future<List<ThumbData>> _queryRelatedList(dom.Document document) async {
+    return _queryThumbs(document, '#related');
   }
 
   /// 在element下查找[.thumb]元素
-  List<ThumbData> queryThumbs(dom.Document document, String selector) {
+  List<ThumbData> _queryThumbs(dom.Document document, String selector) {
     var container = document.querySelector(selector);
     if (container == null) return List<ThumbData>();
 
