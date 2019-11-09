@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
 
+import '../../../main.dart';
+
 class SearchTagField extends StatefulWidget {
   @override
   _SearchTagFieldState createState() => _SearchTagFieldState();
@@ -8,8 +10,11 @@ class SearchTagField extends StatefulWidget {
 
 class _SearchTagFieldState extends State<SearchTagField> {
   TextEditingController controller = TextEditingController();
+  TheHentaiWorldService theHentaiWorldService =
+      getIt<TheHentaiWorldService>(); // 注入
 
   _toSearch() {
+    theHentaiWorldService.cleanSearchDirectString();
     Navigator.of(context).pushNamed(
       '/search-result',
       arguments: {

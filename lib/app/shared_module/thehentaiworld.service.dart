@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
+import 'package:random_color/random_color.dart';
 
 enum ThumbType {
   image,
@@ -47,8 +49,9 @@ class ThumbData {
 class TagData {
   final String tag;
   final String label;
+  final Color color;
 
-  TagData({this.tag, this.label});
+  TagData({this.tag, this.label, this.color});
 
   @override
   String toString() {
@@ -89,11 +92,41 @@ Future<dom.Document> $document(String url) async {
 }
 
 class TheHentaiWorldService {
+  /// document.querySelector('[rel=alternate]')
+  dom.Element _getLinkAlternate(dom.Document document) {
+    return document.querySelector('[rel=alternate]');
+  }
+
+  /// 搜索的时候，有些搜索会被重定向
+  /// 然而有些不会
+  String _searchDirectString;
+
+  /// 搜索前务必清理[_searchDirectString]
+  void cleanSearchDirectString() {
+    _searchDirectString = null;
+  }
+
   /// 点击搜索按钮
   Future<SearchResponse> searchString({String str, int page = 1}) async {
-    dom.Document document =
-        await $document('https://thehentaiworld.com/page/$page/?s=$str');
-    return _getResponse(document);
+    if (_searchDirectString == null || _searchDirectString == 'search') {
+      dom.Document document =
+          await $document('https://thehentaiworld.com/page/$page/?s=$str');
+
+      if (_searchDirectString == null) {
+        var link = _getLinkAlternate(document);
+        if (link != null) {
+          String href = link.attributes['href'];
+          // url上的第一个path
+          _searchDirectString = Uri.parse(href).pathSegments.first;
+        }
+      }
+      return _getResponse(document);
+    } else if (_searchDirectString == 'tag') {
+      return searchTag(tag: str, page: page);
+    } else {
+      // 其他情况暂不处理
+      return null;
+    }
   }
 
   /// 搜索tag, 按下回车键
@@ -120,6 +153,7 @@ class TheHentaiWorldService {
   /// 缓存tags
   /// 因为tags的变化不是很频繁
   List<TagData> _tags;
+  RandomColor _randomColor = RandomColor();
 
   /// 返回所有的tags
   Stream<List<TagData>> getTags() async* {
@@ -136,6 +170,7 @@ class TheHentaiWorldService {
       tags.add(TagData(
         label: tag.text.trim(),
         tag: tag.attributes['href'].split('/').last,
+        color: _randomColor.randomColor(),
       ));
       yield tags;
     }

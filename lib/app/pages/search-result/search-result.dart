@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_imagenetwork/flutter_imagenetwork.dart';
+import 'package:thehentaiworld/app/pages/search-result/widgets/more_hentai_navigation.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
 import 'package:thehentaiworld/app/shared_module/widgets/type_tag.dart';
 import 'package:thehentaiworld/main.dart';
@@ -24,6 +25,12 @@ class _SearchResultState extends State<SearchResult> {
   ScrollController controller = ScrollController();
 
   @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     _init();
@@ -41,8 +48,8 @@ class _SearchResultState extends State<SearchResult> {
     if (widget.searchType == SearchType.tag) {
       r = await theHentaiWorldService.searchTag(tag: widget.tag, page: _page);
     } else if (widget.searchType == SearchType.search) {
-      r = await theHentaiWorldService.searchTag(
-          tag: widget.tag, page: _page);
+      r = await theHentaiWorldService.searchString(
+          str: widget.tag, page: _page);
     } else if (widget.searchType == SearchType.neww) {
       r = await theHentaiWorldService.searchNew(page: _page);
     } else if (widget.searchType == SearchType.updated) {
@@ -57,7 +64,7 @@ class _SearchResultState extends State<SearchResult> {
     }
   }
 
-  _setPage(int newPage) {
+  void _setPage(int newPage) {
     setState(() {
       _page = newPage;
     });
@@ -114,61 +121,14 @@ class _SearchResultState extends State<SearchResult> {
           if (searchResponse.startPage != 0 && searchResponse.endPage != 0)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  if (_page != 1)
-                    _button('Prev', () {
-                      if (_page >= 1) _setPage(_page - 1);
-                    }),
-                  _button(
-                    searchResponse.startPage.toString(),
-                    () {
-                      _setPage(searchResponse.startPage);
-                    },
-                    _page == searchResponse.startPage,
-                  ),
-                  _button((searchResponse.startPage + 1).toString(), () {
-                    _setPage(searchResponse.startPage + 1);
-                  }, _page == searchResponse.startPage + 1),
-                  _button('...', null),
-                  _button((searchResponse.endPage - 1).toString(), () {
-                    _setPage(searchResponse.endPage - 1);
-                  }, _page == searchResponse.endPage - 1),
-                  _button(searchResponse.endPage.toString(), () {
-                    _setPage(searchResponse.endPage);
-                  }, _page == searchResponse.endPage),
-                  if (_page != searchResponse.endPage)
-                    _button('Next', () {
-                      if (_page < searchResponse.endPage) _setPage(_page + 1);
-                    }),
-                ],
+              child: MoreHentaiNavigation(
+                page: _page,
+                start: searchResponse.startPage,
+                end: searchResponse.endPage,
+                onChanged: _setPage,
               ),
             ),
         ],
-      ),
-    );
-  }
-
-  Widget _button(String text, Function onTap, [bool selected = false]) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-            color: selected ? Colors.black : Color.fromRGBO(204, 204, 204, 1),
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          text,
-          style: TextStyle(
-            color: selected ? Colors.black : Color.fromRGBO(136, 136, 136, 1),
-          ),
-        ),
       ),
     );
   }

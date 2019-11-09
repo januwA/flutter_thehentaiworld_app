@@ -50,7 +50,7 @@ class _ThumbImagePagesState extends State<ThumbImagePages> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _pageController?.dispose();
     super.dispose();
   }
 

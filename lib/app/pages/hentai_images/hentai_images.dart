@@ -48,9 +48,11 @@ class HhentaiImagesState extends State<HentaiImages> {
   Future<void> _init() async {
     _hentaiImagesData =
         await theHentaiWorldService.getHentaiImages(widget.thumb);
-    setState(() {
-      loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   @override

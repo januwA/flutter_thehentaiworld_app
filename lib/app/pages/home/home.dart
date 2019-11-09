@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
               SizedBox(height: ScreenUtil.instance.setHeight(30)),
               UbermenuNav(),
               SizedBox(height: ScreenUtil.instance.setHeight(20)),
-              Logo(),
+              Hero(tag: 'logo', child: Logo()),
               SearchTagField(),
             ],
           ),

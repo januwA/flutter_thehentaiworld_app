@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
+import 'package:thehentaiworld/app/shared_module/to_search_result.dart';
 import 'package:thehentaiworld/app/shared_module/widgets/logo.dart';
 import 'package:thehentaiworld/app/shared_module/widgets/search_tag_field.dart';
 import 'package:thehentaiworld/app/shared_module/widgets/tag_button.dart';
-import 'package:random_color/random_color.dart';
 import 'package:thehentaiworld/app/shared_module/widgets/ubermenu_nav.dart';
 
 import '../../../main.dart';
@@ -19,7 +21,21 @@ class _TagsState extends State<Tags> {
   bool loading = true;
   Stream<List<TagData>> _tags$;
   List<TagData> _tags;
-  RandomColor _randomColor = RandomColor();
+
+  /// 每次渲染100个
+  final int cound = 100;
+  int page = 1;
+
+  /// 一次渲染5000多个元素有点吃力
+  List<TagData> _tagsRange = [];
+  List<TagData> get tagsRange {
+    int start = _tagsRange.length;
+    int end = min(page * cound, _tags.length);
+    _tagsRange.addAll(_tags.getRange(start, end));
+    return _tagsRange;
+  }
+
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -35,6 +51,12 @@ class _TagsState extends State<Tags> {
     });
   }
 
+  _loadMoreTag() {
+    setState(() {
+      page += 1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -47,7 +69,7 @@ class _TagsState extends State<Tags> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 30),
-                    Logo(),
+                    Hero(tag: 'logo', child: Logo()),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 14.0),
                       child: UbermenuNav(),
@@ -56,35 +78,48 @@ class _TagsState extends State<Tags> {
                     SizedBox(height: 10),
                     Expanded(
                       child: Scrollbar(
-                        child: ListView(
-                          children: <Widget>[
-                            if (_tags == null)
-                              StreamBuilder(
-                                stream: _tags$,
-                                builder: (context,
-                                    AsyncSnapshot<List<TagData>> snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Center(
-                                        child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: CircularProgressIndicator(),
-                                    ));
-                                  }
+                        child: NotificationListener(
+                          onNotification: (Notification notification) {
+                            if (notification is ScrollEndNotification) {
+                              // 下拉到底部-10的距离时，触发加载更多
+                              if (_scrollController.position.extentAfter < 10) {
+                                _loadMoreTag();
+                              }
+                            }
 
-                                  if (snapshot.connectionState ==
-                                          ConnectionState.active ||
-                                      snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                    _tags = snapshot.data;
-                                    return _tagLists(context);
-                                  }
-                                  return SizedBox();
-                                },
-                              )
-                            else
-                              _tagLists(context),
-                          ],
+                            return true;
+                          },
+                          child: ListView(
+                            controller: _scrollController,
+                            children: <Widget>[
+                              if (_tags == null)
+                                StreamBuilder(
+                                  stream: _tags$,
+                                  builder: (context,
+                                      AsyncSnapshot<List<TagData>> snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Center(
+                                          child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(),
+                                      ));
+                                    }
+
+                                    if (snapshot.connectionState ==
+                                            ConnectionState.active ||
+                                        snapshot.connectionState ==
+                                            ConnectionState.done) {
+                                      _tags = snapshot.data;
+                                      return _tagList(context);
+                                    }
+                                    return SizedBox();
+                                  },
+                                )
+                              else
+                                _tagList(context),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -95,25 +130,17 @@ class _TagsState extends State<Tags> {
     );
   }
 
-  Wrap _tagLists(BuildContext context) {
+  Wrap _tagList(BuildContext context) {
     return Wrap(
       spacing: 20,
       runSpacing: 10,
       children: <Widget>[
-        for (var tag in _tags)
+        for (var tag in tagsRange)
           TagButton(
             key: ValueKey(tag.tag),
             text: tag.label,
-            color: _randomColor.randomColor(),
-            onTap: () {
-              Navigator.of(context).pushNamed(
-                '/search-result',
-                arguments: {
-                  'searchType': SearchType.tag,
-                  'tag': tag.tag,
-                },
-              );
-            },
+            color: tag.color,
+            onTap: () => toSearchResult(SearchType.tag, tag.tag),
           ),
       ],
     );
