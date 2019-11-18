@@ -56,6 +56,7 @@ class _SearchResultState extends State<SearchResult> {
       r = await theHentaiWorldService.searchUpdated(page: _page);
     }
 
+    // print(r);
     if (mounted) {
       setState(() {
         searchResponse = r;

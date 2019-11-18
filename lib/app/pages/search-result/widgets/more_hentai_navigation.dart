@@ -6,9 +6,6 @@ class MoreHentaiNavigation extends StatelessWidget {
   final int start;
   final int end;
   final Function(int page) onChanged;
-
-  String get _start => start.toString();
-  String get _end => start.toString();
   const MoreHentaiNavigation({
     Key key,
     @required this.start,
@@ -34,7 +31,7 @@ class MoreHentaiNavigation extends StatelessWidget {
     } else {
       _result.addAll([
         _button(
-          _start,
+          start.toString(),
           () => onChanged(start),
           page == start,
         ),
@@ -50,7 +47,7 @@ class MoreHentaiNavigation extends StatelessWidget {
           page == end - 1,
         ),
         _button(
-          _end,
+          end.toString(),
           () => onChanged(end),
           page == end,
         ),
