@@ -19,22 +19,22 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)..init(context);
+    final br = SizedBox(height: ScreenUtil.instance.setHeight(30));
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.all(ScreenUtil.instance.setWidth(12.0)),
+          padding: EdgeInsets.all(ScreenUtil.instance.setWidth(22.0)),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: ScreenUtil.instance.setHeight(20)),
+              br,
               Text(
                 'The Hentai World - Huge variety of hentai content.',
                 style: Theme.of(context).textTheme.headline,
               ),
-              SizedBox(height: ScreenUtil.instance.setHeight(30)),
+              br,
               UbermenuNav(),
-              SizedBox(height: ScreenUtil.instance.setHeight(20)),
+              br,
               Hero(tag: 'logo', child: Logo()),
               SearchTagField(),
             ],
