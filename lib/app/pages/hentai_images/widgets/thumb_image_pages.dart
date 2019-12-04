@@ -35,7 +35,7 @@ class _ThumbImagePagesState extends State<ThumbImagePages> {
     currentPage = widget.initialPage;
     _pageController = PageController(
       initialPage: currentPage,
-      viewportFraction: widget.full ? 1 : 0.93, // TODO: 等待flutter修复,自动反弹的BUG
+      viewportFraction: widget.full ? 1 : 0.93,
     );
 
     _pageController.addListener(() {

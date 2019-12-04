@@ -18,11 +18,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil(width: 375, height: 667)..init(context);
+    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)..init(context);
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: EdgeInsets.all(ScreenUtil.instance.setWidth(12.0)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

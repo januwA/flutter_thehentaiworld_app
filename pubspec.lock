@@ -193,13 +193,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.0"
-  provider:
-    dependency: transitive
-    description:
-      name: provider
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.1.0+1"
   quiver:
     dependency: transitive
     description:
@@ -295,7 +288,7 @@ packages:
       name: video_box
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.7.0"
+    version: "0.7.2"
   video_player:
     dependency: transitive
     description:

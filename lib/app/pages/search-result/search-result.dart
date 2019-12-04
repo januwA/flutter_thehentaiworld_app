@@ -85,6 +85,10 @@ class _SearchResultState extends State<SearchResult> {
     );
   }
 
+  void _toDetail(thumb) {
+    Navigator.of(context).pushNamed('/hentai-images', arguments: thumb);
+  }
+
   Widget _list() {
     return SingleChildScrollView(
       controller: controller,
@@ -94,17 +98,13 @@ class _SearchResultState extends State<SearchResult> {
           for (var thumb in thumbs)
             GestureDetector(
               key: ObjectKey(thumb),
-              onTap: () {
-                Navigator.of(context)
-                    .pushNamed('/hentai-images', arguments: thumb);
-              },
+              onTap: () => _toDetail(thumb),
               child: Stack(
                 children: [
                   Align(
                     alignment: Alignment.topCenter,
                     child: AjanuwImage(
                       image: AjanuwNetworkImage(thumb.originalImage),
-                      // frameBuilder: AjanuwImage.defaultFrameBuilder,
                       loadingWidget: AjanuwImage.defaultLoadingWidget,
                       loadingBuilder: AjanuwImage.defaultLoadingBuilder,
                       errorBuilder: AjanuwImage.defaultErrorBuilder,
