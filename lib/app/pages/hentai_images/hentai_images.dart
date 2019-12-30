@@ -43,7 +43,7 @@ class HhentaiImagesState extends State<HentaiImages> {
         loop: true,
         volume: mainStore.openVolume ? 1.0 : 0.0,
       );
-      vc.showVideoCtrl(false);
+      vc.setControllerLayer(show: false);
       vc.initialize();
     }
     _init();
