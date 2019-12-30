@@ -13,8 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  TheHentaiWorldService theHentaiWorldService =
-      getIt<TheHentaiWorldService>(); // 注入
+  final theHentaiWorldService = getIt<TheHentaiWorldService>(); // 注入
 
   @override
   Widget build(BuildContext context) {

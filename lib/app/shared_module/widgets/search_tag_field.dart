@@ -9,9 +9,8 @@ class SearchTagField extends StatefulWidget {
 }
 
 class _SearchTagFieldState extends State<SearchTagField> {
-  TextEditingController controller = TextEditingController();
-  TheHentaiWorldService theHentaiWorldService =
-      getIt<TheHentaiWorldService>(); // 注入
+  final controller = TextEditingController();
+  final theHentaiWorldService = getIt<TheHentaiWorldService>(); // 注入
 
   _toSearch() {
     theHentaiWorldService.cleanSearchDirectString();

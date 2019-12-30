@@ -16,8 +16,7 @@ class SearchResult extends StatefulWidget {
 }
 
 class _SearchResultState extends State<SearchResult> {
-  TheHentaiWorldService theHentaiWorldService =
-      getIt<TheHentaiWorldService>(); // 注入
+  final theHentaiWorldService = getIt<TheHentaiWorldService>(); // 注入
   int _page = 1;
   bool loading = true;
   SearchResponse searchResponse;
@@ -25,15 +24,15 @@ class _SearchResultState extends State<SearchResult> {
   ScrollController controller = ScrollController();
 
   @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-
-  @override
   void initState() {
     super.initState();
     _init();
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 
   Future<void> _init() async {
