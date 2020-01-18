@@ -82,7 +82,7 @@ packages:
       name: flutter_ajanuw_router
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.2"
+    version: "0.3.1"
   flutter_imagenetwork:
     dependency: "direct main"
     description:
@@ -245,13 +245,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.5"
-  system_shortcuts:
-    dependency: transitive
-    description:
-      name: system_shortcuts
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.0.7"
   term_glyph:
     dependency: transitive
     description:
@@ -286,7 +279,7 @@ packages:
       name: video_box
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.8.2"
+    version: "0.9.1"
   video_player:
     dependency: transitive
     description:
@@ -308,13 +301,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.1+1"
-  volume:
-    dependency: transitive
-    description:
-      name: volume
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.0"
   xml:
     dependency: transitive
     description:

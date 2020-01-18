@@ -40,7 +40,7 @@ class HhentaiImagesState extends State<HentaiImages> {
       vc = VideoController(
         source: VideoPlayerController.network(widget.thumb.videoSrc),
         autoplay: true,
-        loop: true,
+        looping: true,
         volume: mainStore.openVolume ? 1.0 : 0.0,
       );
       vc.setControllerLayer(show: false);
