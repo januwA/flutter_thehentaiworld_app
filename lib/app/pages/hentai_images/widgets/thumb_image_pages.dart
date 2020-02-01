@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_imagenetwork/flutter_imagenetwork.dart';
 import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
-import 'package:thehentaiworld/app/shared_module/widgets/type_tag.dart';
 
 class ThumbImagePages extends StatefulWidget {
   final List<ThumbData> thumbs;
@@ -133,12 +132,6 @@ class _ThumbImagePagesState extends State<ThumbImagePages> {
               ),
             ],
           ),
-          child: thumb.type == ThumbType.video
-              ? Align(
-                  alignment: Alignment.topLeft,
-                  child: TypeTag(),
-                )
-              : SizedBox(),
         ),
       );
     }

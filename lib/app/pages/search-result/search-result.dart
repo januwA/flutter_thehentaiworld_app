@@ -26,17 +26,13 @@ class _SearchResultState extends State<SearchResult> {
   @override
   void initState() {
     super.initState();
-    _init();
+    _setSearchResponse();
   }
 
   @override
   void dispose() {
     controller?.dispose();
     super.dispose();
-  }
-
-  Future<void> _init() async {
-    _setSearchResponse();
   }
 
   Future<void> _setSearchResponse() async {
@@ -48,7 +44,9 @@ class _SearchResultState extends State<SearchResult> {
       r = await theHentaiWorldService.searchTag(tag: widget.tag, page: _page);
     } else if (widget.searchType == SearchType.search) {
       r = await theHentaiWorldService.searchString(
-          str: widget.tag, page: _page);
+        str: widget.tag,
+        page: _page,
+      );
     } else if (widget.searchType == SearchType.neww) {
       r = await theHentaiWorldService.searchNew(page: _page);
     } else if (widget.searchType == SearchType.updated) {
@@ -84,10 +82,6 @@ class _SearchResultState extends State<SearchResult> {
     );
   }
 
-  void _toDetail(thumb) {
-    Navigator.of(context).pushNamed('/hentai-images', arguments: thumb);
-  }
-
   Widget _list() {
     return SingleChildScrollView(
       controller: controller,
@@ -96,8 +90,7 @@ class _SearchResultState extends State<SearchResult> {
         children: <Widget>[
           for (var thumb in thumbs)
             GestureDetector(
-              key: ObjectKey(thumb),
-              onTap: () => _toDetail(thumb),
+              onTap: () => Navigator.of(context).pushNamed('/hentai-images', arguments: thumb),
               child: Stack(
                 children: [
                   Align(

@@ -86,8 +86,8 @@ class MoreHentaiNavigation extends StatelessWidget {
     }
 
     return Wrap(
-      spacing: 6,
-      runSpacing: 6,
+      spacing: 12,
+      runSpacing: 12,
       children: <Widget>[
         if (page != 1) _button('Prev', () => onChanged(page - 1)),
         ..._result,

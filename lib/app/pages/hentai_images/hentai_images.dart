@@ -9,7 +9,6 @@ import 'package:video_player/video_player.dart';
 
 import '../../../main.dart';
 import '../../shared_module/widgets/type_tag.dart';
-import 'widgets/thumb_image_pages.dart';
 
 class HentaiImages extends StatefulWidget {
   final ThumbData thumb;
@@ -20,36 +19,38 @@ class HentaiImages extends StatefulWidget {
 }
 
 class HhentaiImagesState extends State<HentaiImages> {
-  TheHentaiWorldService theHentaiWorldService =
-      getIt<TheHentaiWorldService>(); // 注入
-
-  MainStore mainStore = getIt<MainStore>(); // 注入
+  final theHentaiWorldService = getIt<TheHentaiWorldService>(); // 注入
+  final mainStore = getIt<MainStore>(); // 注入
   VideoController vc;
 
   HentaiImagesData _hentaiImagesData;
+  bool loading = true;
   List<ThumbData> get relatedThumbs => _hentaiImagesData.relatedThumbs;
   List<ThumbData> get miniThumbs => _hentaiImagesData.miniThumbs;
-  bool loading = true;
+  bool get isVideo => widget.thumb.type == ThumbType.video;
+  double get _volume => mainStore.openVolume ? 1.0 : 0.0;
 
   @override
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-    loading = true;
-    if (widget.thumb.type == ThumbType.video) {
-      vc = VideoController(
+    if (isVideo) {
+      vc ??= VideoController(
         source: VideoPlayerController.network(widget.thumb.videoSrc),
         autoplay: true,
         looping: true,
-        volume: mainStore.openVolume ? 1.0 : 0.0,
-      );
-      vc.setControllerLayer(show: false);
-      vc.initialize();
+        volume: _volume,
+      )
+        ..setControllerLayer(show: false)
+        ..initialize();
     }
     _init();
   }
 
   Future<void> _init() async {
+    setState(() {
+      loading = true;
+    });
     _hentaiImagesData =
         await theHentaiWorldService.getHentaiImages(widget.thumb);
     if (mounted) {
@@ -79,35 +80,29 @@ class HhentaiImagesState extends State<HentaiImages> {
       body: loading
           ? Center(child: CircularProgressIndicator())
           : ListView(
+            padding: EdgeInsets.zero,
               children: <Widget>[
-                if (widget.thumb.type == ThumbType.video)
+                if (isVideo)
                   AspectRatio(
                     aspectRatio: 16 / 9,
                     child: VideoBox(controller: vc),
                   )
                 else
-                  AspectRatio(
-                    aspectRatio: 9 / 15,
-                    child: ThumbImagePages(
-                      thumbs: miniThumbs,
-                      onTap: (page) {
-                        Navigator.of(context).pushNamed(
-                          '/full-hentai-images',
-                          arguments: {
-                            'thumbs': miniThumbs,
-                            'index': page,
-                          },
-                        );
-                      },
+                  for (var item in miniThumbs)
+                    AjanuwImage(
+                      image: AjanuwNetworkImage(item.originalImage),
+                      fit: BoxFit.cover,
+                      loadingWidget: AjanuwImage.defaultLoadingWidget,
+                      loadingBuilder: AjanuwImage.defaultLoadingBuilder,
+                      errorBuilder: AjanuwImage.defaultErrorBuilder,
                     ),
-                  ),
                 SizedBox(height: 10),
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: SelectableText(
                       'Related Hentai',
-                      style: Theme.of(context).textTheme.title,
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
                 ),
@@ -147,22 +142,6 @@ class HhentaiImagesState extends State<HentaiImages> {
                     );
                   }).toList(),
                 ),
-                // AspectRatio(
-                //   aspectRatio: 9 / 15,
-                //   child: ThumbImagePages(
-                //     thumbs: relatedThumbs,
-                //     onTap: (index) {
-                //       // 跳转其他页面时，暂停视频的播放
-                //       if (vc?.videoCtrl?.value?.isPlaying ?? false) {
-                //         vc.togglePlay();
-                //       }
-                //       Navigator.of(context).pushNamed(
-                //         '/hentai-images',
-                //         arguments: relatedThumbs[index],
-                //       );
-                //     },
-                //   ),
-                // ),
               ],
             ),
     );

@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
               br,
               Text(
                 'The Hentai World - Huge variety of hentai content.',
-                style: Theme.of(context).textTheme.headline,
+                style: Theme.of(context).textTheme.headline5,
               ),
               br,
               UbermenuNav(),
