@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thehentaiworld/app/router.dart';
+import './router.dart';
 
 class MyApp extends StatelessWidget {
   @override

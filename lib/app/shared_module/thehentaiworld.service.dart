@@ -51,31 +51,23 @@ class TagData {
   final String tag;
   final String label;
   final Color color;
+  final String count;
 
-  TagData({this.tag, this.label, this.color});
+  const TagData({this.tag, this.label, this.color, this.count});
 
   @override
   String toString() {
     return """{
       tag: $tag,
       label: $label
-      }""";
+    }""";
   }
-}
-
-/// deatil相关的tag
-class HentaiTag {
-  final String tag;
-  final String text;
-  final String count;
-
-  HentaiTag({this.tag, this.text, this.count});
 }
 
 class HentaiImagesData {
   final List<ThumbData> miniThumbs;
   final List<ThumbData> relatedThumbs;
-  final List<HentaiTag> tags;
+  final List<TagData> tags;
 
   HentaiImagesData({this.miniThumbs, this.relatedThumbs, this.tags});
 }
@@ -226,14 +218,18 @@ class TheHentaiWorldService {
     );
   }
 
-  List<HentaiTag> _queryHentaiDetailTags(dom.Document document) {
+  List<TagData> _queryHentaiDetailTags(dom.Document document) {
     var tagsUl = document.querySelector('#tags');
-    if (tagsUl == null) return List<HentaiTag>();
+    if (tagsUl == null) return List<TagData>();
     return tagsUl.querySelectorAll("li").map((e) {
       var a = e.querySelector('a');
       var tag = a.attributes['href'].split("/").last;
-      return HentaiTag(
-          text: a.text, count: e.querySelector('span').text, tag: tag);
+      return TagData(
+        label: a.text,
+        count: e.querySelector('span').text,
+        tag: tag,
+        color: _randomColor.randomColor(),
+      );
     }).toList();
   }
 

@@ -7,9 +7,9 @@ import 'package:video_box/video.controller.dart';
 import 'package:video_box/video_box.dart';
 import 'package:video_player/video_player.dart';
 
+import 'widgets/tag.dart';
 import '../../../main.dart';
 import '../../shared_module/thehentaiworld.service.dart';
-import '../../shared_module/to_search_result.dart';
 import '../../shared_module/widgets/type_tag.dart';
 
 class HentaiImages extends StatefulWidget {
@@ -29,11 +29,11 @@ class HhentaiImagesState extends State<HentaiImages> {
   bool loading = true;
   List<ThumbData> get relatedThumbs => _hentaiImagesData.relatedThumbs;
   List<ThumbData> get miniThumbs => _hentaiImagesData.miniThumbs;
-  List<HentaiTag> get tags => _hentaiImagesData.tags;
+  List<TagData> get tags => _hentaiImagesData.tags;
   bool get isVideo => widget.thumb.type == ThumbType.video;
   double get _volume => mainStore.openVolume ? 1.0 : 0.0;
 
-  bool showTag = true;
+  bool showTag = false;
 
   @override
   void initState() {
@@ -66,9 +66,7 @@ class HhentaiImagesState extends State<HentaiImages> {
   }
 
   void setOpenVolume() {
-    if (vc != null) {
-      mainStore.openVolume = vc.volume != 0.0 ? true : false;
-    }
+    if (vc != null) mainStore.setOpenVolume(vc.volume);
   }
 
   @override
@@ -88,6 +86,7 @@ class HhentaiImagesState extends State<HentaiImages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: loading
           ? Center(child: CircularProgressIndicator())
           : ListView(
@@ -107,7 +106,7 @@ class HhentaiImagesState extends State<HentaiImages> {
                       loadingBuilder: AjanuwImage.defaultLoadingBuilder,
                       errorBuilder: AjanuwImage.defaultErrorBuilder,
                     ),
-                SizedBox(height: 10),
+                SizedBox(height: 20),
                 Center(
                   child: RaisedButton(
                     color: Colors.orange,
@@ -118,47 +117,23 @@ class HhentaiImagesState extends State<HentaiImages> {
                     ),
                   ),
                 ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    AnimatedCrossFade(
-                      firstChild: Wrap(
-                        alignment: WrapAlignment.start,
-                        children: <Widget>[
-                          for (HentaiTag tag in tags)
-                            RaisedButton(
-                              onPressed: () {
-                                toSearchResult(SearchType.tag, tag.tag);
-                              },
-                              child: Row(
-                                children: <Widget>[
-                                  Text(tag.text),
-                                  SizedBox(width: 6),
-                                  Text(tag.count),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                      secondChild: SizedBox(),
-                      crossFadeState: showTag
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                      duration: Duration(milliseconds: 300),
-                    ),
-                  ],
+                AnimatedCrossFade(
+                  firstChild: Wrap(
+                    children: tags.map((tag) => Tag(tag)).toList(),
+                  ),
+                  secondChild: SizedBox(),
+                  crossFadeState: showTag
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  duration: Duration(milliseconds: 300),
                 ),
+                SizedBox(height: 20),
                 Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: SelectableText(
-                      'Related Hentai',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
+                  child: SelectableText(
+                    'Related Hentai',
+                    style: Theme.of(context).textTheme.headline6,
                   ),
                 ),
-                SizedBox(height: 10),
                 GridView.count(
                   primary: false,
                   shrinkWrap: true,
