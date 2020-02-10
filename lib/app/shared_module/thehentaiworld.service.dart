@@ -46,6 +46,7 @@ class ThumbData {
   }
 }
 
+/// tag列表的tag
 class TagData {
   final String tag;
   final String label;
@@ -62,11 +63,21 @@ class TagData {
   }
 }
 
+/// deatil相关的tag
+class HentaiTag {
+  final String tag;
+  final String text;
+  final String count;
+
+  HentaiTag({this.tag, this.text, this.count});
+}
+
 class HentaiImagesData {
   final List<ThumbData> miniThumbs;
   final List<ThumbData> relatedThumbs;
+  final List<HentaiTag> tags;
 
-  HentaiImagesData({this.miniThumbs, this.relatedThumbs});
+  HentaiImagesData({this.miniThumbs, this.relatedThumbs, this.tags});
 }
 
 class SearchResponse {
@@ -201,28 +212,29 @@ class TheHentaiWorldService {
     var document = await $document(thumb.href);
     List<ThumbData> _miniThumbs = List<ThumbData>();
     if (thumb.type == ThumbType.image) {
-      _miniThumbs = await _queryMiniThumbs(document);
+      _miniThumbs = _queryThumbs(document, '#miniThumbContainer');
       if (_miniThumbs.isEmpty) {
         // 有可能不存在多个视图返回的空列表，所以显示自己
         _miniThumbs.add(thumb);
       }
     }
-    List<ThumbData> relatedThumbs = await _queryRelatedList(document);
+
     return HentaiImagesData(
       miniThumbs: _miniThumbs,
-      relatedThumbs: relatedThumbs,
+      relatedThumbs: _queryThumbs(document, '#related'),
+      tags: _queryHentaiDetailTags(document),
     );
   }
 
-  /// 获取[#miniThumbContainer]下的thumbs
-  Future<List<ThumbData>> _queryMiniThumbs(dom.Document document) async {
-    return _queryThumbs(document, '#miniThumbContainer');
-  }
-
-  /// 获取[thumb]有关类容
-  /// 并不是每次都一样，而是动态的
-  Future<List<ThumbData>> _queryRelatedList(dom.Document document) async {
-    return _queryThumbs(document, '#related');
+  List<HentaiTag> _queryHentaiDetailTags(dom.Document document) {
+    var tagsUl = document.querySelector('#tags');
+    if (tagsUl == null) return List<HentaiTag>();
+    return tagsUl.querySelectorAll("li").map((e) {
+      var a = e.querySelector('a');
+      var tag = a.attributes['href'].split("/").last;
+      return HentaiTag(
+          text: a.text, count: e.querySelector('span').text, tag: tag);
+    }).toList();
   }
 
   /// 在element下查找[.thumb]元素
