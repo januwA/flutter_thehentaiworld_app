@@ -99,7 +99,7 @@ class _ThumbImagePagesState extends State<ThumbImagePages> {
           fit: widget.fit,
           loadingWidget: AjanuwImage.defaultLoadingWidget,
           loadingBuilder: AjanuwImage.defaultLoadingBuilder,
-          errorBuilder: AjanuwImage.defaultErrorBuilder,
+          alt: 'image laod error',
         ),
       );
     } else {

@@ -90,7 +90,8 @@ class _SearchResultState extends State<SearchResult> {
         children: <Widget>[
           for (var thumb in thumbs)
             GestureDetector(
-              onTap: () => Navigator.of(context).pushNamed('/hentai-images', arguments: thumb),
+              onTap: () => Navigator.of(context)
+                  .pushNamed('/hentai-images', arguments: thumb),
               child: Stack(
                 children: [
                   Align(
@@ -99,7 +100,7 @@ class _SearchResultState extends State<SearchResult> {
                       image: AjanuwNetworkImage(thumb.originalImage),
                       loadingWidget: AjanuwImage.defaultLoadingWidget,
                       loadingBuilder: AjanuwImage.defaultLoadingBuilder,
-                      errorBuilder: AjanuwImage.defaultErrorBuilder,
+                      alt: 'image load error.',
                       fit: BoxFit.cover,
                     ),
                   ),

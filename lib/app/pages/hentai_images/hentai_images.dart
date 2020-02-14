@@ -23,6 +23,9 @@ class HentaiImages extends StatefulWidget {
 class HhentaiImagesState extends State<HentaiImages> {
   final theHentaiWorldService = getIt<TheHentaiWorldService>(); // 注入
   final mainStore = getIt<MainStore>(); // 注入
+
+  ScrollController controller = ScrollController();
+
   VideoController vc;
 
   HentaiImagesData _hentaiImagesData;
@@ -73,6 +76,7 @@ class HhentaiImagesState extends State<HentaiImages> {
   void dispose() {
     setOpenVolume();
     vc?.dispose();
+    controller?.dispose();
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
   }
@@ -89,87 +93,94 @@ class HhentaiImagesState extends State<HentaiImages> {
       backgroundColor: Colors.white,
       body: loading
           ? Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                if (isVideo)
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: VideoBox(controller: vc),
-                  )
-                else
-                  for (var item in miniThumbs)
-                    AjanuwImage(
-                      image: AjanuwNetworkImage(item.originalImage),
-                      fit: BoxFit.cover,
-                      loadingWidget: AjanuwImage.defaultLoadingWidget,
-                      loadingBuilder: AjanuwImage.defaultLoadingBuilder,
-                      errorBuilder: AjanuwImage.defaultErrorBuilder,
-                    ),
-                SizedBox(height: 20),
-                Center(
-                  child: RaisedButton(
-                    color: Colors.orange,
-                    onPressed: _toogleTags,
-                    child: Text(
-                      "Toogle Tags",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                AnimatedCrossFade(
-                  firstChild: Wrap(
-                    children: tags.map((tag) => Tag(tag)).toList(),
-                  ),
-                  secondChild: SizedBox(),
-                  crossFadeState: showTag
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  duration: Duration(milliseconds: 300),
-                ),
-                SizedBox(height: 20),
-                Center(
-                  child: SelectableText(
-                    'Related Hentai',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ),
-                GridView.count(
-                  primary: false,
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  children: relatedThumbs.map((ThumbData thumb) {
-                    return InkWell(
-                      onTap: () {
-                        setOpenVolume();
-                        vc?.pause(); // 跳转其他页面时，暂停视频的播放
-                        Navigator.of(context).pushNamed(
-                          '/hentai-images',
-                          arguments: thumb,
-                        );
-                      },
-                      child: Card(
-                        child: Stack(
-                          children: <Widget>[
-                            Positioned.fill(
-                              child: AjanuwImage(
-                                image: AjanuwNetworkImage(thumb.image),
-                                fit: BoxFit.cover,
-                                frameBuilder: AjanuwImage.defaultFrameBuilder,
-                              ),
+          : RefreshIndicator(
+              onRefresh: _init,
+              child: CustomScrollView(
+                controller: controller,
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        if (isVideo)
+                          AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: VideoBox(controller: vc),
+                          )
+                        else
+                          for (var item in miniThumbs)
+                            AjanuwImage(
+                              image: AjanuwNetworkImage(item.originalImage),
+                              fit: BoxFit.cover,
+                              loadingWidget: AjanuwImage.defaultLoadingWidget,
+                              loadingBuilder: AjanuwImage.defaultLoadingBuilder,
+                              errorBuilder: (_, __) => Icon(Icons.error),
                             ),
-                            if (thumb.type == ThumbType.video)
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: TypeTag(text: 'Video'),
-                              ),
-                          ],
+                        SizedBox(height: 20),
+                        Center(
+                          child: RaisedButton(
+                            color: Colors.orange,
+                            onPressed: _toogleTags,
+                            child: Text(
+                              "Toogle Tags",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
+                        AnimatedCrossFade(
+                          firstChild: Wrap(
+                            children: tags.map((tag) => Tag(tag)).toList(),
+                          ),
+                          secondChild: SizedBox(),
+                          crossFadeState: showTag
+                              ? CrossFadeState.showFirst
+                              : CrossFadeState.showSecond,
+                          duration: Duration(milliseconds: 300),
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: SelectableText(
+                            'Related Hentai',
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SliverGrid.count(
+                    crossAxisCount: 2,
+                    children: relatedThumbs.map((ThumbData thumb) {
+                      return InkWell(
+                        onTap: () {
+                          setOpenVolume();
+                          vc?.pause(); // 跳转其他页面时，暂停视频的播放
+                          Navigator.of(context).pushNamed(
+                            '/hentai-images',
+                            arguments: thumb,
+                          );
+                        },
+                        child: Card(
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned.fill(
+                                child: AjanuwImage(
+                                  image: AjanuwNetworkImage(thumb.image),
+                                  fit: BoxFit.cover,
+                                  frameBuilder: AjanuwImage.defaultFrameBuilder,
+                                ),
+                              ),
+                              if (thumb.type == ThumbType.video)
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: TypeTag(text: 'Video'),
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
             ),
     );
   }

@@ -1,6 +1,6 @@
 name: thehentaiworld
 description: A new Flutter project.
-version: 0.1.4
+version: 0.1.5
 
 environment:
   sdk: '>=2.2.2 <3.0.0'
@@ -13,8 +13,8 @@ dependencies:
   html: ^0.14.0+3
   flutter_screenutil:
   get_it:
-  flutter_ajanuw_router: ^0.3.1
-  flutter_imagenetwork: ^0.3.2
+  flutter_ajanuw_router: ^0.3.3
+  flutter_imagenetwork: ^0.4.0
   video_box: ^0.10.0
   matrix_gesture_detector: ^0.1.0
   random_color: ^1.0.3
