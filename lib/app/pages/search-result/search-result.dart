@@ -97,7 +97,7 @@ class _SearchResultState extends State<SearchResult> {
                   Align(
                     alignment: Alignment.topCenter,
                     child: AjanuwImage(
-                      image: AjanuwNetworkImage(thumb.originalImage),
+                      image: AjanuwNetworkImage(thumb.image),
                       loadingWidget: AjanuwImage.defaultLoadingWidget,
                       loadingBuilder: AjanuwImage.defaultLoadingBuilder,
                       alt: 'image load error.',

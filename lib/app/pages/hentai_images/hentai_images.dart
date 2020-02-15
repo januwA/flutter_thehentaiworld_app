@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_imagenetwork/flutter_imagenetwork.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
 import 'package:thehentaiworld/store/main.store.dart';
@@ -41,7 +40,6 @@ class HhentaiImagesState extends State<HentaiImages> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     if (isVideo) {
       vc ??= VideoController(
         source: VideoPlayerController.network(widget.thumb.videoSrc),
@@ -77,7 +75,6 @@ class HhentaiImagesState extends State<HentaiImages> {
     setOpenVolume();
     vc?.dispose();
     controller?.dispose();
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     super.dispose();
   }
 

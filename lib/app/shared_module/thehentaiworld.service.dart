@@ -26,7 +26,7 @@ class ThumbData {
   /// type为[ThumbType.video]时，将填充视频地址
   final String videoSrc;
 
-  ThumbData({
+  const ThumbData({
     this.type,
     this.href,
     this.image,
@@ -69,7 +69,7 @@ class HentaiImagesData {
   final List<ThumbData> relatedThumbs;
   final List<TagData> tags;
 
-  HentaiImagesData({this.miniThumbs, this.relatedThumbs, this.tags});
+  const HentaiImagesData({this.miniThumbs, this.relatedThumbs, this.tags});
 }
 
 class SearchResponse {
@@ -77,7 +77,7 @@ class SearchResponse {
   final int endPage;
   final List<ThumbData> thumbs;
 
-  SearchResponse({this.startPage, this.endPage, this.thumbs});
+  const SearchResponse({this.startPage, this.endPage, this.thumbs});
 
   @override
   String toString() {
@@ -89,25 +89,19 @@ class SearchResponse {
   }
 }
 
-Future<dom.Document> $document(String url) async {
-  var r = await http.get(url);
-  return parse(r.body);
-}
+Future<dom.Document> $document(String url) async =>
+    parse((await http.get(url)).body);
 
 class TheHentaiWorldService {
   /// document.querySelector('[rel=alternate]')
-  dom.Element _getLinkAlternate(dom.Document document) {
-    return document.querySelector('[rel=alternate]');
-  }
+  dom.Element _getLinkAlternate(dom.Document document) => document.querySelector('[rel=alternate]');
 
   /// 搜索的时候，有些搜索会被重定向
   /// 然而有些不会
   String _searchDirectString;
 
   /// 搜索前务必清理[_searchDirectString]
-  void cleanSearchDirectString() {
-    _searchDirectString = null;
-  }
+  void cleanSearchDirectString() => _searchDirectString = null;
 
   /// 点击搜索按钮
   Future<SearchResponse> searchString({String str, int page = 1}) async {
