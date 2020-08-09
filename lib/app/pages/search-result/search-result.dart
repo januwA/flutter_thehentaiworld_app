@@ -5,6 +5,7 @@ import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
 import 'package:thehentaiworld/app/shared_module/widgets/type_tag.dart';
 import 'package:thehentaiworld/main.dart';
 
+/// 搜索返回的列表页面
 class SearchResult extends StatefulWidget {
   final SearchType searchType;
   final String tag;

@@ -17,12 +17,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334)..init(context);
-    final br = SizedBox(height: ScreenUtil.instance.setHeight(30));
+    ScreenUtil.init(context, width: 750, height: 1334);
+    final br = SizedBox(height: ScreenUtil().setHeight(30));
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.all(ScreenUtil.instance.setWidth(22.0)),
+          padding: EdgeInsets.all(ScreenUtil().setWidth(22.0)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
