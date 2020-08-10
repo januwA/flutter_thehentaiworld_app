@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 /// 分页按钮，底部导航
-class MoreHentaiNavigation extends StatelessWidget {
+class MoreHentaiNavigation extends StatefulWidget {
   final int page;
   final int start;
   final int end;
   final Function(int page) onChanged;
+
   const MoreHentaiNavigation({
     Key key,
     @required this.start,
@@ -14,57 +15,63 @@ class MoreHentaiNavigation extends StatelessWidget {
     @required this.onChanged,
   }) : super(key: key);
 
+  @override
+  _MoreHentaiNavigationState createState() => _MoreHentaiNavigationState();
+}
+
+class _MoreHentaiNavigationState extends State<MoreHentaiNavigation> {
+
   get firstButton => _button(
-        start.toString(),
-        () => onChanged(start),
-        page == start,
+        widget.start.toString(),
+        () => widget.onChanged(widget.start),
+        widget.page == widget.start,
       );
 
   get endButton => _button(
-        end.toString(),
-        () => onChanged(end),
-        page == end,
+        widget.end.toString(),
+        () => widget.onChanged(widget.end),
+        widget.page == widget.end,
       );
 
   @override
   Widget build(BuildContext context) {
     List<Widget> _result = [];
-    bool isSmall = end < 8;
+    bool isSmall = widget.end < 8;
     if (isSmall) {
-      for (var i = 1; i <= end; i++) {
+      for (var i = 1; i <= widget.end; i++) {
         _result.add(
           _button(
             i.toString(),
-            () => onChanged(i),
-            page == i,
+            () => widget.onChanged(i),
+            widget.page == i,
           ),
         );
       }
     } else {
       const point = 6;
-      if (page <= point) {
-        for (var i = start; i <= point + 2; i++) {
+      if (widget.page <= point) {
+        for (var i = widget.start; i <= point + 2; i++) {
           _result.add(
             _button(
               i.toString(),
-              () => onChanged(i),
-              page == i,
+              () => widget.onChanged(i),
+              widget.page == i,
             ),
           );
         }
         _result.add(_button('...', null));
         _result.add(endButton);
-      } else if (page > point && page < end - point) {
+      } else if (widget.page > point && widget.page < widget.end - point) {
         _result.add(firstButton);
         _result.add(_button('...', null));
-        int form = page - 3;
-        int other = page + 3;
+        int form = widget.page - 3;
+        int other = widget.page + 3;
         for (var i = form; i <= other; i++) {
           _result.add(
             _button(
               i.toString(),
-              () => onChanged(i),
-              page == i,
+              () => widget.onChanged(i),
+              widget.page == i,
             ),
           );
         }
@@ -73,12 +80,12 @@ class MoreHentaiNavigation extends StatelessWidget {
       } else {
         _result.add(firstButton);
         _result.add(_button('...', null));
-        for (var i = end - (point + 2); i <= end; i++) {
+        for (var i = widget.end - (point + 2); i <= widget.end; i++) {
           _result.add(
             _button(
               i.toString(),
-              () => onChanged(i),
-              page == i,
+              () => widget.onChanged(i),
+              widget.page == i,
             ),
           );
         }
@@ -89,9 +96,11 @@ class MoreHentaiNavigation extends StatelessWidget {
       spacing: 12,
       runSpacing: 12,
       children: <Widget>[
-        if (page != 1) _button('Prev', () => onChanged(page - 1)),
+        if (widget.page != 1)
+          _button('Prev', () => widget.onChanged(widget.page - 1)),
         ..._result,
-        if (page != end) _button('Next', () => onChanged(page + 1)),
+        if (widget.page != widget.end)
+          _button('Next', () => widget.onChanged(widget.page + 1)),
       ],
     );
   }

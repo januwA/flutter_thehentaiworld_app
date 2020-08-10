@@ -23,6 +23,7 @@ class _SearchResultState extends State<SearchResult> {
   SearchResponse searchResponse;
   List<ThumbData> get thumbs => searchResponse.thumbs;
   ScrollController controller = ScrollController();
+  final TextEditingController pageController = TextEditingController();
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _SearchResultState extends State<SearchResult> {
   @override
   void dispose() {
     controller?.dispose();
+    pageController.dispose();
     super.dispose();
   }
 
@@ -123,6 +125,43 @@ class _SearchResultState extends State<SearchResult> {
                 onChanged: _setPage,
               ),
             ),
+
+          // to page
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 90,
+                  height: 40,
+                  child: TextField(
+                    controller: pageController,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.done,
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      hintText: 'PAGE #',
+                      contentPadding: EdgeInsets.all(0),
+                      hintStyle: TextStyle(color: Colors.black38),
+                      border: OutlineInputBorder(),
+                    ),
+                    textAlign: TextAlign.center,
+                    cursorColor: Theme.of(context).accentColor,
+                    cursorWidth: 2,
+                    cursorRadius: Radius.circular(4.0),
+                  ),
+                ),
+                SizedBox(width: 10),
+                FlatButton(
+                  color: Theme.of(context).accentColor,
+                  textColor: Colors.white,
+                  child: Text('GO'),
+                  onPressed: () => _setPage(int.parse(pageController.text)),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -156,7 +156,7 @@ class HhentaiImagesState extends State<HentaiImages> {
         Toast.show(
           "开始下载",
           context,
-          duration: Toast.LENGTH_LONG,
+          duration: Toast.LENGTH_SHORT,
           gravity: Toast.CENTER,
         );
         var r = await http.get(originalImage);
@@ -164,7 +164,7 @@ class HhentaiImagesState extends State<HentaiImages> {
         Toast.show(
           "下载成功",
           context,
-          duration: Toast.LENGTH_LONG,
+          duration: Toast.LENGTH_SHORT,
           gravity: Toast.CENTER,
         );
       } catch (e) {
