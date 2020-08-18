@@ -152,31 +152,33 @@ class HhentaiImagesState extends State<HentaiImages> {
       var p = path.join(dpath, name);
 
       // 3. 从网络获取图片保存到用户手机
-      try {
-        Toast.show(
-          "开始下载",
-          context,
-          duration: Toast.LENGTH_SHORT,
-          gravity: Toast.CENTER,
-        );
-        var r = await http.get(originalImage);
-        await File(p).writeAsBytes(r.bodyBytes);
-        Toast.show(
-          "下载成功",
-          context,
-          duration: Toast.LENGTH_SHORT,
-          gravity: Toast.CENTER,
-        );
-      } catch (e) {
-        Toast.show(
-          "下载失败",
-          context,
-          duration: Toast.LENGTH_LONG,
-          gravity: Toast.CENTER,
-          textColor: Colors.red,
-        );
-      }
+      Toast.show(
+        "开始下载",
+        context,
+        duration: Toast.LENGTH_SHORT,
+        gravity: Toast.CENTER,
+      );
+      http.get(originalImage).then((r) {
+        File(p).writeAsBytes(r.bodyBytes).then((_) {
+          Toast.show(
+            "下载成功",
+            context,
+            duration: Toast.LENGTH_SHORT,
+            gravity: Toast.CENTER,
+          );
+        }).catchError(_downloadError);
+      }).catchError(_downloadError);
     }
+  }
+
+  _downloadError(_) {
+    Toast.show(
+      "下载失败",
+      context,
+      textColor: Colors.red,
+      duration: Toast.LENGTH_SHORT,
+      gravity: Toast.CENTER,
+    );
   }
 
   @override
@@ -194,9 +196,14 @@ class HhentaiImagesState extends State<HentaiImages> {
                     delegate: SliverChildListDelegate(
                       [
                         if (isVideo)
-                          AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: VideoBox(controller: vc),
+                          GestureDetector(
+                            onLongPress: () => _showCustomMenu(
+                                widget.thumb.videoSrc), // 长按打开Menu菜单
+                            onTapDown: _storePosition, // 按下去的时候记住位置
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: VideoBox(controller: vc),
+                            ),
                           )
                         else
                           for (var item in miniThumbs)
