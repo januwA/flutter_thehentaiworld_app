@@ -94,7 +94,8 @@ Future<dom.Document> $document(String url) async =>
 
 class TheHentaiWorldService {
   /// document.querySelector('[rel=alternate]')
-  dom.Element _getLinkAlternate(dom.Document document) => document.querySelector('[rel=alternate]');
+  dom.Element _getLinkAlternate(dom.Document document) =>
+      document.querySelector('[rel=alternate]');
 
   /// 搜索的时候，有些搜索会被重定向
   /// 然而有些不会
@@ -253,7 +254,7 @@ class TheHentaiWorldService {
           originalImage: image.replaceAll(RegExp(r'-\d+x\d+'), ''),
           videoSrc: type == ThumbType.video
               ? image
-                  .replaceAll(RegExp(r'_thumb\d-\d+x\d+'), '')
+                  .replaceAll(RegExp(r'_thumb\d+-\d+x\d+'), '')
                   .replaceAll(RegExp(r'.jpg$'), '.mp4')
               : null,
         ),
@@ -261,5 +262,15 @@ class TheHentaiWorldService {
     }
 
     return itemObjs;
+  }
+
+  /// 获取video src
+  Future<String> getVideoSrc(String pageUrl) async {
+    var doc = await $document(pageUrl);
+    var t = doc.querySelector('video#video');
+    if (t != null) {
+      return t.querySelector('source').attributes['src'];
+    }
+    return null;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dart_printf/dart_printf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_imagenetwork/flutter_imagenetwork.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
@@ -51,27 +52,41 @@ class HhentaiImagesState extends State<HentaiImages> {
   @override
   void initState() {
     super.initState();
-    if (isVideo) {
-      print(widget.thumb.videoSrc);
-      // https://thehentaiworld.com/wp-content/uploads/2019/03/Josie-Rezal-Elferan-Tekken-Animated-Hentai-3D-CGI-Video_T1_C1_thumb2-220x147.mp4
-
-      // https://thehentaiworld.com/wp-content/uploads/2019/03/Josie-Rezal-Elferan-Tekken-Animated-Hentai-3D-CGI-Video_T1_C1.mp4
-      vc ??= VideoController(
-        source: VideoPlayerController.network(widget.thumb.videoSrc),
-        autoplay: true,
-        looping: true,
-        volume: _volume,
-      )
-        ..setControllerLayer(false)
-        ..initialize();
-    }
     _init();
+  }
+
+  Future<void> _initVideo() async {
+    if (!isVideo) return;
+
+    // 探测video src是否可用
+    var src = widget.thumb.videoSrc;
+    var r = await http.head(widget.thumb.videoSrc);
+    if (r.statusCode != 200) {
+      src = widget.thumb.videoSrc.replaceFirst('.mp4', '.webm');
+      printf(src);
+      var r = await http.head(src);
+      if (r.statusCode != 200) {
+        src = await theHentaiWorldService.getVideoSrc(widget.thumb.href);
+      }
+    }
+
+    vc ??= VideoController(
+      source: VideoPlayerController.network(src),
+      autoplay: true,
+      looping: true,
+      volume: _volume,
+    )
+      ..setControllerLayer(false)
+      ..initialize();
   }
 
   Future<void> _init() async {
     setState(() {
       loading = true;
     });
+
+    await _initVideo();
+
     _hentaiImagesData =
         await theHentaiWorldService.getHentaiImages(widget.thumb);
     if (mounted) {

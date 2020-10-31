@@ -1,6 +1,6 @@
 name: thehentaiworld
 description: A new Flutter project.
-version: 0.4.1
+version: 0.4.2
 
 environment:
   sdk: '>=2.7.0 <3.0.0'
@@ -21,6 +21,7 @@ dependencies:
   matrix_gesture_detector: ^0.1.0
   random_color: ^1.0.3
   toast:
+  dart_printf:
 
 dev_dependencies:
   flutter_test:
