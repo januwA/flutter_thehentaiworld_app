@@ -253,7 +253,7 @@ class TheHentaiWorldService {
           originalImage: image.replaceAll(RegExp(r'-\d+x\d+'), ''),
           videoSrc: type == ThumbType.video
               ? image
-                  .replaceAll(RegExp(r'_thumb1-\d+x\d+'), '')
+                  .replaceAll(RegExp(r'_thumb\d-\d+x\d+'), '')
                   .replaceAll(RegExp(r'.jpg$'), '.mp4')
               : null,
         ),

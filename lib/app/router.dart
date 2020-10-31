@@ -1,7 +1,6 @@
 import 'package:flutter_ajanuw_router/ajanuw_route.dart';
 import 'package:flutter_ajanuw_router/flutter_ajanuw_router.dart';
 import 'package:thehentaiworld/app/pages/hentai_images/hentai_images.dart';
-import 'package:thehentaiworld/app/pages/hentai_images/widgets/full_screent_hentai_image.dart';
 import 'package:thehentaiworld/app/pages/tags/tags.dart';
 
 import 'pages/home/home.dart';
@@ -38,13 +37,6 @@ final List<AjanuwRoute> routes = [
   AjanuwRoute(
     path: 'hentai-images',
     builder: (context, r) => HentaiImages(thumb: r.arguments),
-  ),
-  AjanuwRoute(
-    path: 'full-hentai-images',
-    builder: (context, r) {
-      Map p = r.arguments;
-      return FullScreentHentaiImage(thumbs: p['thumbs'], index: p['index']);
-    },
   ),
   AjanuwRoute(
     path: 'tags',

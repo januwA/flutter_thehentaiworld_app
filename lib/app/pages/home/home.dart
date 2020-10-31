@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
 import 'package:thehentaiworld/app/shared_module/widgets/logo.dart';
 import 'package:thehentaiworld/app/shared_module/widgets/search_tag_field.dart';
@@ -17,12 +16,11 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, width: 750, height: 1334);
-    final br = SizedBox(height: ScreenUtil().setHeight(30));
+    final br = SizedBox(height: 30);
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: EdgeInsets.all(ScreenUtil().setWidth(22.0)),
+          padding: EdgeInsets.all(22.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

@@ -52,6 +52,10 @@ class HhentaiImagesState extends State<HentaiImages> {
   void initState() {
     super.initState();
     if (isVideo) {
+      print(widget.thumb.videoSrc);
+      // https://thehentaiworld.com/wp-content/uploads/2019/03/Josie-Rezal-Elferan-Tekken-Animated-Hentai-3D-CGI-Video_T1_C1_thumb2-220x147.mp4
+
+      // https://thehentaiworld.com/wp-content/uploads/2019/03/Josie-Rezal-Elferan-Tekken-Animated-Hentai-3D-CGI-Video_T1_C1.mp4
       vc ??= VideoController(
         source: VideoPlayerController.network(widget.thumb.videoSrc),
         autoplay: true,
@@ -143,7 +147,7 @@ class HhentaiImagesState extends State<HentaiImages> {
     if (mainStore.savePath?.isNotEmpty ?? false) {
       dpath = mainStore.savePath;
     } else {
-      dpath = await FilePicker.getDirectoryPath();
+      dpath = await FilePicker.platform.getDirectoryPath();
       if (dpath != null) mainStore.savePath = dpath;
     }
 
@@ -217,7 +221,7 @@ class HhentaiImagesState extends State<HentaiImages> {
                                 loadingWidget: AjanuwImage.defaultLoadingWidget,
                                 loadingBuilder:
                                     AjanuwImage.defaultLoadingBuilder,
-                                errorBuilder: (_, __) => Icon(Icons.error),
+                                errorBuilder: (_, __, ___) => Icon(Icons.error),
                               ),
                             ),
                         SizedBox(height: 20),
