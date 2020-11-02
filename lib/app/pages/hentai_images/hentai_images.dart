@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dart_printf/dart_printf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_imagenetwork/flutter_imagenetwork.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
@@ -59,19 +58,19 @@ class HhentaiImagesState extends State<HentaiImages> {
     if (!isVideo) return;
 
     // 探测video src是否可用
-    var src = widget.thumb.videoSrc;
     var r = await http.head(widget.thumb.videoSrc);
     if (r.statusCode != 200) {
-      src = widget.thumb.videoSrc.replaceFirst('.mp4', '.webm');
-      printf(src);
-      var r = await http.head(src);
+      widget.thumb.videoSrc =
+          widget.thumb.videoSrc.replaceFirst('.mp4', '.webm');
+      var r = await http.head(widget.thumb.videoSrc);
       if (r.statusCode != 200) {
-        src = await theHentaiWorldService.getVideoSrc(widget.thumb.href);
+        widget.thumb.videoSrc =
+            await theHentaiWorldService.getVideoSrc(widget.thumb.href);
       }
     }
 
     vc ??= VideoController(
-      source: VideoPlayerController.network(src),
+      source: VideoPlayerController.network(widget.thumb.videoSrc),
       autoplay: true,
       looping: true,
       volume: _volume,
@@ -171,33 +170,17 @@ class HhentaiImagesState extends State<HentaiImages> {
       var p = path.join(dpath, name);
 
       // 3. 从网络获取图片保存到用户手机
-      Toast.show(
-        "开始下载",
-        context,
-        duration: Toast.LENGTH_SHORT,
-        gravity: Toast.CENTER,
-      );
-      http.get(originalImage).then((r) {
-        File(p).writeAsBytes(r.bodyBytes).then((_) {
-          Toast.show(
-            "下载成功",
-            context,
-            duration: Toast.LENGTH_SHORT,
-            gravity: Toast.CENTER,
-          );
+      Toast.show("开始下载", context);
+      http.readBytes(originalImage).then((r) {
+        File(p).writeAsBytes(r).then((_) {
+          Toast.show("下载成功", context);
         }).catchError(_downloadError);
       }).catchError(_downloadError);
     }
   }
 
   _downloadError(_) {
-    Toast.show(
-      "下载失败",
-      context,
-      textColor: Colors.red,
-      duration: Toast.LENGTH_SHORT,
-      gravity: Toast.CENTER,
-    );
+    Toast.show("下载失败", context, textColor: Colors.red);
   }
 
   @override

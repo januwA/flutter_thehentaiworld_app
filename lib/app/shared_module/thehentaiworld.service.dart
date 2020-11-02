@@ -24,9 +24,9 @@ class ThumbData {
   final String originalImage;
 
   /// type为[ThumbType.video]时，将填充视频地址
-  final String videoSrc;
+  String videoSrc;
 
-  const ThumbData({
+  ThumbData({
     this.type,
     this.href,
     this.image,
