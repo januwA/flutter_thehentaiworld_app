@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ajanuw_http/ajanuw_http.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_imagenetwork/flutter_imagenetwork.dart';
 import 'package:thehentaiworld/app/shared_module/thehentaiworld.service.dart';
@@ -9,7 +10,6 @@ import 'package:video_box/video_box.dart';
 import 'package:video_player/video_player.dart';
 import 'package:toast/toast.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -31,6 +31,7 @@ class HentaiImages extends StatefulWidget {
 class HhentaiImagesState extends State<HentaiImages> {
   final theHentaiWorldService = getIt<TheHentaiWorldService>(); // 注入
   final mainStore = getIt<MainStore>(); // 注入
+  final api = AjanuwHttp();
 
   Offset _tapPosition;
 
@@ -58,11 +59,11 @@ class HhentaiImagesState extends State<HentaiImages> {
     if (!isVideo) return;
 
     // 探测video src是否可用
-    var r = await http.head(widget.thumb.videoSrc);
+    var r = await api.head(widget.thumb.videoSrc);
     if (r.statusCode != 200) {
       widget.thumb.videoSrc =
           widget.thumb.videoSrc.replaceFirst('.mp4', '.webm');
-      var r = await http.head(widget.thumb.videoSrc);
+      var r = await api.head(widget.thumb.videoSrc);
       if (r.statusCode != 200) {
         widget.thumb.videoSrc =
             await theHentaiWorldService.getVideoSrc(widget.thumb.href);
@@ -147,15 +148,14 @@ class HhentaiImagesState extends State<HentaiImages> {
     var storageStatus = await Permission.storage.status;
 
     // 没有权限则申请
-    if (storageStatus != PermissionStatus.granted) {
+    if (!storageStatus.isGranted) {
       storageStatus = await Permission.storage.request();
-      if (storageStatus != PermissionStatus.granted) {
+      if (!storageStatus.isGranted) {
         return;
       }
     }
 
     // 2. 获取保存目录
-
     // 缓存目录路径，不免每次都选择目录
     String dpath = '';
     if (mainStore.savePath?.isNotEmpty ?? false) {
@@ -171,16 +171,24 @@ class HhentaiImagesState extends State<HentaiImages> {
 
       // 3. 从网络获取图片保存到用户手机
       Toast.show("开始下载", context);
-      http.readBytes(originalImage).then((r) {
-        File(p).writeAsBytes(r).then((_) {
-          Toast.show("下载成功", context);
-        }).catchError(_downloadError);
-      }).catchError(_downloadError);
+      api.getStream(originalImage).then((r) {
+        var f$ = File(p).openWrite();
+        r.stream.listen(
+          f$.add,
+          onDone: () {
+            Toast.show("下载完成", context);
+            f$.close();
+          },
+          onError: (e) {
+            Toast.show("保存失败", context, textColor: Colors.red);
+            f$.close();
+          },
+        );
+      }).catchError((e) {
+        print(e);
+        Toast.show("下载失败", context, textColor: Colors.red);
+      });
     }
-  }
-
-  _downloadError(_) {
-    Toast.show("下载失败", context, textColor: Colors.red);
   }
 
   @override

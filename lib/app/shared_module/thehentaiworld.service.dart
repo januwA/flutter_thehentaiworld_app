@@ -1,8 +1,10 @@
+import 'package:ajanuw_http/ajanuw_http.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart' as dom;
 import 'package:random_color/random_color.dart';
+
+final api = AjanuwHttp();
 
 enum ThumbType {
   image,
@@ -90,7 +92,7 @@ class SearchResponse {
 }
 
 Future<dom.Document> $document(String url) async =>
-    parse((await http.get(url)).body);
+    parse((await api.get(url)).body);
 
 class TheHentaiWorldService {
   /// document.querySelector('[rel=alternate]')
