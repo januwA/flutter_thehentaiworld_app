@@ -19,6 +19,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TheHentaiWorld',
+      theme: ThemeData(
+        primarySwatch: Colors.orange,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        accentColor: Colors.orange,
+      ),
       initialRoute: '',
       navigatorObservers: [router.navigatorObserver],
       navigatorKey: router.navigatorKey,

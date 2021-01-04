@@ -150,45 +150,35 @@ class HhentaiImagesState extends State<HentaiImages> {
     // 没有权限则申请
     if (!storageStatus.isGranted) {
       storageStatus = await Permission.storage.request();
-      if (!storageStatus.isGranted) {
-        return;
-      }
+      if (!storageStatus.isGranted) return;
     }
 
     // 2. 获取保存目录
     // 缓存目录路径，不免每次都选择目录
-    String dpath = '';
-    if (mainStore.savePath?.isNotEmpty ?? false) {
-      dpath = mainStore.savePath;
-    } else {
-      dpath = await FilePicker.platform.getDirectoryPath();
-      if (dpath != null) mainStore.savePath = dpath;
-    }
+    final String dirPath = await FilePicker.platform.getDirectoryPath();
 
-    if (dpath != null) {
-      var name = path.basename(originalImage);
-      var p = path.join(dpath, name);
+    if (dirPath == null) return;
+    final String savePath = path.join(dirPath, path.basename(originalImage));
 
-      // 3. 从网络获取图片保存到用户手机
-      Toast.show("开始下载", context);
-      api.getStream(originalImage).then((r) {
-        var f$ = File(p).openWrite();
-        r.stream.listen(
-          f$.add,
-          onDone: () {
-            Toast.show("下载完成", context);
-            f$.close();
-          },
-          onError: (e) {
-            Toast.show("保存失败", context, textColor: Colors.red);
-            f$.close();
-          },
-        );
-      }).catchError((e) {
-        print(e);
-        Toast.show("下载失败", context, textColor: Colors.red);
-      });
-    }
+    // 3. 从网络获取图片保存到用户手机
+    Toast.show("开始下载", context);
+    api.getStream(originalImage).then((r) {
+      var f$ = File(savePath).openWrite();
+      r.stream.listen(
+        f$.add,
+        onDone: () {
+          Toast.show("下载完成", context);
+          f$.close();
+        },
+        onError: (e) {
+          Toast.show("保存失败", context, textColor: Colors.red);
+          f$.close();
+        },
+      );
+    }).catchError((e) {
+      print(e);
+      Toast.show("下载失败", context, textColor: Colors.red);
+    });
   }
 
   @override

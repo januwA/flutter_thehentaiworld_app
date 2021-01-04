@@ -163,7 +163,7 @@ class TheHentaiWorldService {
     dom.Document document = await $document('https://thehentaiworld.com/tags/');
     dom.Element tagListContainer = document.querySelector('#tag-list');
     List<dom.Element> tagsList = tagListContainer.querySelectorAll('.artist');
-    List<TagData> tags = List<TagData>();
+    List<TagData> tags = <TagData>[];
 
     for (var i = 0; i < tagsList.length; i++) {
       var tag = tagsList[i];
@@ -199,7 +199,7 @@ class TheHentaiWorldService {
   /// 路由为[/hentai-images], 其实有点像detail页面
   Future<HentaiImagesData> getHentaiImages(ThumbData thumb) async {
     var document = await $document(thumb.href);
-    List<ThumbData> _miniThumbs = List<ThumbData>();
+    List<ThumbData> _miniThumbs = <ThumbData>[];
     if (thumb.type == ThumbType.image) {
       _miniThumbs = _queryThumbs(document, '#miniThumbContainer');
       if (_miniThumbs.isEmpty) {
@@ -217,7 +217,7 @@ class TheHentaiWorldService {
 
   List<TagData> _queryHentaiDetailTags(dom.Document document) {
     var tagsUl = document.querySelector('#tags');
-    if (tagsUl == null) return List<TagData>();
+    if (tagsUl == null) return <TagData>[];
     return tagsUl.querySelectorAll("li").map((e) {
       var a = e.querySelector('a');
       var tag = a.attributes['href'].split("/").last;
@@ -233,10 +233,10 @@ class TheHentaiWorldService {
   /// 在element下查找[.thumb]元素
   List<ThumbData> _queryThumbs(dom.Document document, String selector) {
     var container = document.querySelector(selector);
-    if (container == null) return List<ThumbData>();
+    if (container == null) return <ThumbData>[];
 
     var thumbs = container.querySelectorAll('.thumb');
-    if (thumbs == null) return List<ThumbData>();
+    if (thumbs == null) return <ThumbData>[];
 
     List<ThumbData> itemObjs = [];
     for (dom.Element item in thumbs) {

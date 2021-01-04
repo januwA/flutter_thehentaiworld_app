@@ -5,7 +5,4 @@ class MainStore {
   setOpenVolume(double volume) {
     openVolume = volume != 0.0 ? true : false;
   }
-
-  // 下载保存的目录
-  String savePath = '';
 }
